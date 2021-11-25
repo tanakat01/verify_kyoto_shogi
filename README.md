@@ -1,79 +1,9 @@
 # verify_kyoto_shogi
 京都将棋の弱解析結果を検証する
-mate.db の形式について
 
-https://yaneuraou.yaneu.com/2016/02/05/standard-shogi-book-format/
-を55にしたものか?
-- 2行目以降にその局面での指し手、相手の予想される応手(ないときは”none”)、その指し手で局面を進めたときの評価値、この指し手の探索深さ(探索した結果求めたものであるなら)を書くことにします。
-- やねうらおう形式では，先手はb 後手はw, 先手は大文字，後手は小文字
-- 座標は数字は右から1-9, 英字は上からa-i
+注) Notebook形式で作成してみましたが，Google Colab上ではメモリ不足で動きませんでした．64GB搭載の MacBook Pro上では動きます．
 
-#YANEURAOU - DB2016 1.00
-のように#以降はコメントかと思ったが，#で始まるのは最初の行だけだった．
+この Notebookは[第26回ゲームプログラミングワークショップ GPW-2021](https://www.gi-ipsj.org/gpw/2021/) で [ベストポスター賞](https://www.gi-ipsj.org/gpw/2021/to_award.html)を受賞した電気通信大学の塩田 雅弘さん，伊藤 毅志さんによる[京都将棋の弱解決](https://ipsj.ixsq.nii.ac.jp/ej/?action=pages_view_main&active_action=repository_view_main_item_detail&item_id=213428&item_no=1&page_id=13&block_id=8)の発表の結果を検証するために作成しました．
 
-grep sfen mate.db | wc
- 38339458 191697290 1419633481
-なので，登録されているのは3800万局面くらい．
-
-チェスにそろえて，先手が白か?
-黒番は，
-grep ' b ' mate.db | wc  
-sfen 2k2/S3+P/2n2/2K2/5 b SN2LP 0
-(base) mbp-m1% grep ' b ' mate.db | wc  
- 27574588 137872940 1018833779
-sfen 5/S3+P/k1n2/2K2/5 b SN2LP 0
-+N*4d none 31999
-
- . . . . .
- S . . .+P
- k . n . .
- . . K . .
- . . . . .
- SNLLP
-
-白番は?
-(base) mbp-m1% grep ' w ' mate.db | wc 
- 10764870 53824350 400799702
-
-基本は，局面と可能手
-sfen 5/S3+N/2k2/n1L1+P/sK3 w LP 0
-3c4b +L*4c -32000
-3c2c 5b4a+ -32000
-
- . . . . .
- S . . .+N
- . . k . .
- n . L .+P
- s K . . .
-
- LP  
-
- 駒は
- K - 玉
- P, +P - 歩，飛車
- N, +N - 桂馬，金
- S, +S - 銀，角
- L, +L - 香，と
-
-
-
-
- grep sfen mate.db | grep -v ' 0' 
-が何も出てこないので，基本は
-
-京都将棋のルールの確認
-
-- パスは非合法手
-- 王手がかかっていない状態で，合法手がなくなるのは?
-
- K P . . .
- P N . . .
- . . . . .
- . . . . .
- . . . . k
-
-nssll 
-
-などはそのパターン
-これは不明だが，このパターンが現れないなら証明には影響がない．
+Notebookではなくてpythonファイル形式でダウンロードして pypy で動かすと1時間ほどで検証が終わると思います．ただし，この場合もメモリは32GB以上は必要と思われます．
 
